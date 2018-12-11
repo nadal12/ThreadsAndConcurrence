@@ -1,8 +1,6 @@
 #include "aventura3.h"
 
 
-
-
 /*
     Crea instancias de estructuras my_stack en la memoria y devuelve un
     puntero al stack.
@@ -26,6 +24,9 @@ struct my_stack *my_stack_init (int size){
 }
 
 
+/*******************************************************************************
+ *                        FUNCIONALIDADES DE LA PILA
+*******************************************************************************/
 /*
     Metodo para agregar nuevos nodos al stack.
     Parametros:
