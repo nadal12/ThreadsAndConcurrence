@@ -2,6 +2,7 @@
 
 
 
+
 /*
     Crea instancias de estructuras my_stack en la memoria y devuelve un
     puntero al stack.
