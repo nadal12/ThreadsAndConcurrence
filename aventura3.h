@@ -4,7 +4,9 @@
 #include <sys/types.h> /* Definiciones de tipos de datos como size_t*/
 #include <unistd.h>    /* Funciones read(), write(), close()*/
 #include <pthread.h>   /* Funcionalidades de threads*/
-#include <stdio.h>      
+#include <stdio.h>  
+#include <errno.h>
+#include <string.h>
 
 /*
     ESTRUCTURAS DE DATOS DE LA AVENTRA
@@ -30,3 +32,8 @@ int my_stack_len(struct my_stack *stack);
 struct my_stack *my_stack_read(char *filename);
 int my_stack_write(struct my_stack *stack, char *filename);
 int my_stack_purge(struct my_stack *stack);
+
+/******************************************************************************
+                             FUNCIONES DE APOYO
+******************************************************************************/
+void imprime_error(char *mensaje_error);

@@ -299,3 +299,29 @@ int my_stack_purge(struct my_stack *stack) {
     //Return the number of deleted nodes. 
     return counter;
 }
+
+/******************************************************************************
+                             FUNCIONES DE APOYO
+******************************************************************************/
+/**
+ * Metodo que imprime a través de la salida estandar de errores un mensaje
+ * indicando:
+ *      Número de error (errno): mensaje de error.
+ * En caso de que el parámetro mensaje_error == NULL, mensaje de error será el
+ * String devuelto por strerror(errno) -el error correspondiente a errno.
+ * 
+ * En caso contrario, se imprime el mensaje_error recibido.
+ * 
+ * Parámetros:
+ *          +mensaje_error: String con el mensaje de error correspondiente.
+ * 
+ * Return: void method. Returns nothing.
+ */
+void imprime_error(char *mensaje_error) {
+    if (mensaje_error == NULL) {
+        fprintf(stderr, "Error %d: %s\n", errno, strerror(errno));
+    
+    } else {
+        fprintf(stderr, "%s\n", mensaje_error);
+    }
+}
