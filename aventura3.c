@@ -206,7 +206,7 @@ int my_stack_write(struct my_stack *stack, char *filename) {
 
     //Comprobación inicial de la pila. 
     if (stack == NULL) return -1;
-
+    
     //Declaraciones
     struct my_stack *aux_stack = my_stack_init(stack->size); 
     int counter = 0; //Para contar el número de datos escritos en el fichero. 
