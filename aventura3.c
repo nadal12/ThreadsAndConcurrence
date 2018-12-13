@@ -1,6 +1,8 @@
 #include "aventura3.h"
 
-
+/*******************************************************************************
+ *                        FUNCIONALIDADES DE LA PILA
+*******************************************************************************/
 /*
     Crea instancias de estructuras my_stack en la memoria y devuelve un
     puntero al stack.
@@ -23,10 +25,6 @@ struct my_stack *my_stack_init (int size){
     return stack;
 }
 
-
-/*******************************************************************************
- *                        FUNCIONALIDADES DE LA PILA
-*******************************************************************************/
 /*
     Metodo para agregar nuevos nodos al stack.
     Parametros:
@@ -83,6 +81,7 @@ void *my_stack_pop(struct my_stack *stack) {
 
     //Free the unused space.
     free(oldFirst);
+    free(data);
 
     return data;
 }
@@ -128,6 +127,7 @@ int my_stack_len (struct my_stack *stack) {
                    direccion del fichero a ser leido.
     +Devuelve: 
         +stack: Puntero al stack generado.
+        +NULL: Si ocurre algún error.
     
 */
 struct my_stack *my_stack_read(char *filename) {

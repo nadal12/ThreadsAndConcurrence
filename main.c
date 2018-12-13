@@ -1,19 +1,23 @@
+#include <pthread.h>   /* Funcionalidades de threads*/
 #include "aventura3.h"
 
 //CONFIGURACIÓN
-int const NUMERO_DE_NODOS = 10; 
-void *VALOR_INICIALIZACION = 0;
-int const SIZE_DE_LA_PILA = sizeof(int);
+#define NUM_HILOS 10
+#define NUMERO_DE_NODOS 10
+#define SIZE_DE_LA_PILA sizeof(int)
+#define N 1000000
 
-
+int *VALOR_INICIALIZACION = 0;
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 int main(int argc, char *argv[]) {
 
     //Declaraciones
     struct my_stack_node *node = NULL;
-    struct my_stack *stack = my_stack_init(SIZE_DE_LA_PILA);
+    struct my_stack *stack;
     int numberOfNodes = 0;
     char *fileName = argv[1];
+    pthread_t *threads[NUM_HILOS];
 
     if (fileName == NULL) {
         imprime_error("Se debe pasar por parámetro el nombre del fichero de pila.\nPrograma detenido.");
@@ -21,34 +25,84 @@ int main(int argc, char *argv[]) {
     }
 
 //Se lee la pila del fichero pasado por parámetro.
-    stack = my_stack_read(fileName);      
-//Se contabilizan los nodos de la pila leída.     
-    numberOfNodes = my_stack_len(stack);
+    stack = my_stack_read(fileName);
 
-//En caso de que sea = -1 (pila NULL) le asignamos el valor 0 a numero de nodos. 
-    if (numberOfNodes==-1) {
-        numberOfNodes = 0;
+    //Check por errores leyendo desde fichero
+    if (!stack) {
+        /*En caso de haber error leyendo desde fichero*/
+
+        puts("Fichero inexistente.\nGenerando pila.");
+
+        stack = my_stack_init(SIZE_DE_LA_PILA);
+
+        for (int i = 0;i<NUMERO_DE_NODOS;i++) {
+            my_stack_push(stack, VALOR_INICIALIZACION);
+        }
+
+    } else {
+        /*En caso contrario, si faltan elementos en la pila, añadir restantes*/
+
+        //Se contabilizan los nodos de la pila leída.     
+        numberOfNodes = my_stack_len(stack);
+
+        //Se crean los nodos hasta llegar a 10. 
+        while (numberOfNodes<NUMERO_DE_NODOS) {
+
+            my_stack_push(stack, VALOR_INICIALIZACION);
+            numberOfNodes++;
+
+        }
     }
 
-    //Se crean los nodos hasta llegar a 10. 
-         while (numberOfNodes<NUMERO_DE_NODOS) {
+    //Stack lista para ser utilizada. Creación de hilos:
+    printf("Número de hilos: %d\nNúmero de iteraciones: %d\n", NUM_HILOS, N);
 
-             my_stack_push(stack, VALOR_INICIALIZACION);
-             numberOfNodes++;
+    //Creación de los 10 hilos que se ejecutaran concurrentemente
+    for (int i = 0; i < NUM_HILOS; i++) {
+        pthread_create(threads[i], NULL, popAddPush, stack);
+    }
+    //Esperar por la ejecución de los diez hilos.
+    for (int i = 0; i < NUM_HILOS; i++) {
+        pthread_join(threads[i], NULL);
+    }
 
-         }
-
+    puts("Hilos terminados.. Guardando fichero en disco.");
     //Volcamos la pila en el fichero. 
-     if ((my_stack_write(stack, fileName))==-1) {
-
-         imprime_error("Error al guardar la pila en el fichero.");
-
-     }
-
-     //Liberamos la memoria utilizada por la pila
-     my_stack_purge(stack);
+    
+    if ((my_stack_write(stack, fileName))==-1) {
+        imprime_error("Error al guardar la pila en el fichero.");
+    }
 
 
+    //Liberamos la memoria utilizada por la pila
+    my_stack_purge(stack);
+
+    puts("Completado.\nCerrando programa.");
+    
     return 1;
+
+}
+
+void *popAddPush(void *parametro) {
+
+    struct my_stack *stack = (struct my_stack*)parametro;
+    int *value;
+    pthread_t tid = pthread_getthreadid_np();
+
+    printf("Comenzando hilo %ld\n", tid);
+
+    for (int i = 0; i < N; i++) {
+        /*Sección crítica para el pop*/
+        pthread_mutex_lock(&mutex);
+        value =(int *) my_stack_pop(stack);
+        pthread_mutex_unlock(&mutex);
+
+        value++;
+
+        /*Sección crítica para el push*/
+        pthread_mutex_lock(&mutex);
+        my_stack_push(stack, value);
+        pthread_mutex_unlock(&mutex);
+    }
 
 }
