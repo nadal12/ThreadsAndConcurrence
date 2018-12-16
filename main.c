@@ -7,6 +7,9 @@ int const N = 1000;
 int const SIZE_DE_LA_PILA = sizeof(int);
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
+    //Declaraciones
+    struct my_stack_node *node = NULL;
+    int numberOfNodes = 0;
 
 struct my_data {
    int val;
@@ -14,15 +17,13 @@ struct my_data {
 };
 
 struct my_data *data1;
-
+    struct my_stack *stack = NULL;
 
 
 int main(int argc, char *argv[]) {
+    stack = my_stack_init(SIZE_DE_LA_PILA);
 
     //Declaraciones
-    struct my_stack_node *node = NULL;
-    struct my_stack *stack = my_stack_init(SIZE_DE_LA_PILA);
-    int numberOfNodes = 0;
     char *fileName = argv[1];
 
     if ((fileName == NULL) || (argv[2]!=NULL))  {
@@ -52,13 +53,6 @@ int main(int argc, char *argv[]) {
     numberOfNodes = my_stack_len(stack);
         printf("Número de nodos: %d\n", numberOfNodes);
 
-    //Volcamos la pila en el fichero. 
-     if ((my_stack_write(stack, fileName))==-1) {
-
-         imprime_error("Error al guardar la pila en el fichero.");
-
-     }
-
      //Liberamos la memoria utilizada por la pila.
      my_stack_purge(stack);
 
@@ -71,7 +65,11 @@ int main(int argc, char *argv[]) {
     
     }
 
+    //Se esperan todos los hilos.
+    pthread_join(&mutex, NULL);
 
+    //Se escribe la pila en el fichero.
+    my_stack_write(stack, fileName);
 
     return 1;
 
@@ -79,12 +77,19 @@ int main(int argc, char *argv[]) {
 
     void *function() {
 
+        //Declaraciones
+        int value; 
+
         for (int i=0;i<N;i++) {
-
-            my_stack_pop();
-            
-            my_stack_push();
-
+            pthread_mutex_lock(&mutex);
+            value = my_stack_pop(stack);
+            pthread_mutex_unlock(&mutex);
+            value++;
+            pthread_mutex_lock(&mutex);
+            my_stack_push(stack, value);
+            pthread_mutex_unlock(&mutex);
         }
+
+        pthread_exit(NULL);
 
     }
