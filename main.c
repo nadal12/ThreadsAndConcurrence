@@ -10,19 +10,10 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
     //Declaraciones
     struct my_stack_node *node = NULL;
     int numberOfNodes = 0;
-
-struct my_data {
-   int val;
-   char name[8];
-};
-
-struct my_data *data1;
-    struct my_stack *stack = NULL;
-
+    struct my_stack *stack;
 
 int main(int argc, char *argv[]) {
-    stack = my_stack_init(SIZE_DE_LA_PILA);
-
+    
     //Declaraciones
     char *fileName = argv[1];
 
@@ -32,45 +23,55 @@ int main(int argc, char *argv[]) {
     }
 
 //Se lee la pila del fichero pasado por parámetro.
-    stack = my_stack_read(fileName);      
+    stack = my_stack_read(fileName);  
+
+    if (!stack) {
+
+        stack = my_stack_init(SIZE_DE_LA_PILA);
+
+    }    
+
 //Se contabilizan los nodos de la pila leída.     
     numberOfNodes = my_stack_len(stack);
     printf("Número de nodos: %d\n", numberOfNodes);
+
 //En caso de que sea = -1 (pila NULL) le asignamos el valor 0 a numero de nodos. 
     if (numberOfNodes==-1) {
         numberOfNodes = 0;
     }
 
+ printf("Número de nodos: %d\n", numberOfNodes);
+    
     //Se crean los nodos hasta llegar a 10. 
          while (numberOfNodes<NUMBER_OF_NODES) {
-            data1 = malloc(sizeof(struct my_data));
-            data1->val=0;
-             my_stack_push(stack, data1);
-             numberOfNodes++;
-
+            int *data = malloc(SIZE_DE_LA_PILA);
+            *data = 0;
+            my_stack_push(stack, data);
+            numberOfNodes++;
          }
 
     numberOfNodes = my_stack_len(stack);
-        printf("Número de nodos: %d\n", numberOfNodes);
+    printf("Número de nodos: %d\n", numberOfNodes);
 
-     //Liberamos la memoria utilizada por la pila.
-     my_stack_purge(stack);
 
+    puts("Hilos");
     //Se crea el array de hilos. 
      pthread_t hilos[NUMBER_OF_THREADS];
 
     for (int i=0; i<NUMBER_OF_THREADS;i++) {
 
-        pthread_create(hilos[i], NULL, function, NULL);
+        pthread_create(&hilos[i], NULL, function, NULL);
     
     }
 
     //Se esperan todos los hilos.
-    pthread_join(&mutex, NULL);
-
+    for (int i=0; i<NUMBER_OF_THREADS;i++)  {
+    pthread_join(hilos[i], NULL);
+    }
     //Se escribe la pila en el fichero.
     my_stack_write(stack, fileName);
 
+    my_stack_purge(stack);
     return 1;
 
 }
@@ -78,7 +79,7 @@ int main(int argc, char *argv[]) {
     void *function() {
 
         //Declaraciones
-        int value; 
+        int *value; 
 
         for (int i=0;i<N;i++) {
             pthread_mutex_lock(&mutex);
