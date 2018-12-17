@@ -1,5 +1,5 @@
 #include <pthread.h>   /* Funcionalidades de threads*/
-#include "av3.h"
+#include "my_lib.h"
 
 //CONFIGURACIÓN
 #define NUM_HILOS 10

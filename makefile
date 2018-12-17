@@ -2,10 +2,10 @@ CC=gcc
 CFLAGS=-c -g -Wall -std=c99
 LDFLAGS=-pthread
 
-SOURCES=main.c av3.c reader.c
-LIBRARIES=av3.o
-INCLUDES=av3.h
-PROGRAMS= main reader
+SOURCES=my_lib.c av3.c reader.c
+LIBRARIES=my_lib.o
+INCLUDES=my_lib.h
+PROGRAMS= av3 reader
 OBJS=$(SOURCES:.c=.o)
 
 all: $(OBJS) $(PROGRAMS)
@@ -14,7 +14,7 @@ all: $(OBJS) $(PROGRAMS)
 #   $(CC) $(LDFLAGS) $(LIBRARIES) $@.o -o $@
 
 
-main: main.o $(LIBRARIES) $(INCLUDES)
+av3: av3.o $(LIBRARIES) $(INCLUDES)
 	$(CC) $(LDFLAGS) $(LIBRARIES) $< -o $@
 
 reader: reader.o $(LIBRARIES) $(INCLUDES)

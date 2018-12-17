@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <limits.h>
-#include "av3.h"
+#include "my_lib.h"
 
 #define MAX_ITERATIONS 13
 
