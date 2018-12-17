@@ -2,7 +2,7 @@
 #include <limits.h>
 #include "av3.h"
 
-#define MAX_ITERATIONS 10
+#define MAX_ITERATIONS 13
 
 int main(int argc, char *argv[]) {
 
@@ -36,8 +36,6 @@ int main(int argc, char *argv[]) {
     printf("Tamaño del stack: %d\n",stack_size);
     while(stack->first && it < MAX_ITERATIONS) {
         data = (int *) my_stack_pop(stack);
-
-        printf("data: %d\n", *data);
         
         acum += *data; //Calcular sumatorio
         

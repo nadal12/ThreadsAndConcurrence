@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-//Se lee la pila del fichero pasado por parámetro.
+    //Se lee la pila del fichero pasado por parámetro.
     stack = my_stack_read(fileName);
 
     //Check por errores leyendo desde fichero
@@ -49,13 +49,11 @@ int main(int argc, char *argv[]) {
 
         //Se crean los nodos hasta llegar a 10. 
         while (numberOfNodes<NUMERO_DE_NODOS) {
-
             int *initval = malloc(SIZE_DE_LA_PILA);
             *initval = 0;
 
             my_stack_push(stack, initval);
             numberOfNodes++;
-
         }
     }
 
