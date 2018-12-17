@@ -1,5 +1,5 @@
 #include <pthread.h>   /* Funcionalidades de threads*/
-#include "aventura3.h"
+#include "av3.h"
 
 //CONFIGURACIÓN
 #define NUM_HILOS 10
@@ -12,7 +12,6 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 int main(int argc, char *argv[]) {
 
     //Declaraciones
-    struct my_stack_node *node = NULL;
     struct my_stack *stack;
     int numberOfNodes = 0;
     char *fileName = argv[1];
@@ -112,4 +111,5 @@ void *popAddPush(void *parametro) {
         pthread_mutex_unlock(&mutex);
     }
 
+    return 0;
 }
