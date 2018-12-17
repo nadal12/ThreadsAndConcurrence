@@ -65,12 +65,10 @@ void *my_stack_pop(struct my_stack *stack) {
 
     //Declarations
     struct my_stack_node *oldFirst = NULL;
+    void *data;
 
     //Check if the stack is empty.
     if (stack->first == NULL) return NULL;
-
-    void *data = malloc(stack->size);
-    if (data == NULL) { return NULL; } //Comprobación de errores
     
     //Save node data into variable. 
     data = stack->first->data;
@@ -81,7 +79,6 @@ void *my_stack_pop(struct my_stack *stack) {
 
     //Free the unused space.
     free(oldFirst);
-    free(data);
 
     return data;
 }
@@ -96,7 +93,7 @@ void *my_stack_pop(struct my_stack *stack) {
         +contador: Valor entero del número de nodos existentes en el stack.
                    >= 0
 */
-int my_stack_len (struct my_stack *stack) {
+int my_stack_len(struct my_stack *stack) {
 
     //Check si stack existe
     if (stack == NULL) return -1;

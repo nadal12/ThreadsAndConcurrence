@@ -8,7 +8,7 @@ int main(int argc, char *argv[]) {
 
     //Declaraciones
     struct my_stack *stack;
-    int data, stack_size;
+    int *data, stack_size;
     int it = 0;
     int max = 0, min = INT_MAX, acum = 0, prom;
 
@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
     }
 
     //Generar pila
-    stack = my_stack_init(argv[1]);
+    stack = my_stack_read(argv[1]);
 
     if (!stack) { //Comprobar por errores
         imprime_error("Error generando pila desde el fichero especificado.");
@@ -35,18 +35,19 @@ int main(int argc, char *argv[]) {
     //Impresión por pantalla del número de elementos
     printf("Tamaño del stack: %d\n",stack_size);
     while(stack->first && it < MAX_ITERATIONS) {
-        data = (int) my_stack_pop(stack);
-        printf("%d\n", data);
+        data = (int *) my_stack_pop(stack);
+
+        printf("data: %d\n", *data);
         
-        acum += data; //Calcular sumatorio
+        acum += *data; //Calcular sumatorio
         
-        if (data < min) min = data; //Calcular minimo
-        if (data > max) max = data; //Calcular maximo
+        if (*data < min) min = *data; //Calcular minimo
+        if (*data > max) max = *data; //Calcular maximo
 
         it++;
     }
 
     prom = acum/stack_size;
 
-    printf("Items: %d | Suma: %d | Min: %d | Max: %d | Promedio: %d\n");
+    printf("Items: %d | Suma: %d | Min: %d | Max: %d | Promedio: %d\n", stack_size, acum, min, max, prom);
 }

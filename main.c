@@ -5,9 +5,8 @@
 #define NUM_HILOS 10
 #define NUMERO_DE_NODOS 10
 #define SIZE_DE_LA_PILA sizeof(int)
-#define N 1000000
+#define N 1500000
 
-int *VALOR_INICIALIZACION = 0;
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 int main(int argc, char *argv[]) {
@@ -17,7 +16,7 @@ int main(int argc, char *argv[]) {
     struct my_stack *stack;
     int numberOfNodes = 0;
     char *fileName = argv[1];
-    pthread_t *threads[NUM_HILOS];
+    pthread_t threads[NUM_HILOS];
 
     if (fileName == NULL) {
         imprime_error("Se debe pasar por parámetro el nombre del fichero de pila.\nPrograma detenido.");
@@ -36,7 +35,11 @@ int main(int argc, char *argv[]) {
         stack = my_stack_init(SIZE_DE_LA_PILA);
 
         for (int i = 0;i<NUMERO_DE_NODOS;i++) {
-            my_stack_push(stack, VALOR_INICIALIZACION);
+
+            int *initval = malloc(SIZE_DE_LA_PILA);
+            *initval = 0;
+
+            my_stack_push(stack, initval);
         }
 
     } else {
@@ -48,7 +51,10 @@ int main(int argc, char *argv[]) {
         //Se crean los nodos hasta llegar a 10. 
         while (numberOfNodes<NUMERO_DE_NODOS) {
 
-            my_stack_push(stack, VALOR_INICIALIZACION);
+            int *initval = malloc(SIZE_DE_LA_PILA);
+            *initval = 0;
+
+            my_stack_push(stack, initval);
             numberOfNodes++;
 
         }
@@ -59,7 +65,7 @@ int main(int argc, char *argv[]) {
 
     //Creación de los 10 hilos que se ejecutaran concurrentemente
     for (int i = 0; i < NUM_HILOS; i++) {
-        pthread_create(threads[i], NULL, popAddPush, stack);
+        pthread_create(&threads[i], NULL, popAddPush, stack);
     }
     //Esperar por la ejecución de los diez hilos.
     for (int i = 0; i < NUM_HILOS; i++) {
@@ -86,22 +92,23 @@ int main(int argc, char *argv[]) {
 void *popAddPush(void *parametro) {
 
     struct my_stack *stack = (struct my_stack*)parametro;
-    int *value;
-    pthread_t tid = pthread_getthreadid_np();
+    // int value = 0, *pvalue = &value;
+
+    pthread_t tid = pthread_self();
 
     printf("Comenzando hilo %ld\n", tid);
 
     for (int i = 0; i < N; i++) {
         /*Sección crítica para el pop*/
         pthread_mutex_lock(&mutex);
-        value =(int *) my_stack_pop(stack);
+        int *pvalue = (int *) my_stack_pop(stack);
         pthread_mutex_unlock(&mutex);
 
-        value++;
+        (*pvalue)++;
 
         /*Sección crítica para el push*/
         pthread_mutex_lock(&mutex);
-        my_stack_push(stack, value);
+        my_stack_push(stack, pvalue);
         pthread_mutex_unlock(&mutex);
     }
 
