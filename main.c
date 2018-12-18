@@ -3,7 +3,7 @@
 //CONFIGURACIÓN
 int const NUMBER_OF_NODES = 10; 
 int const NUMBER_OF_THREADS = 10;
-int const N = 1000;
+int const N = 1000000;
 int const SIZE_DE_LA_PILA = sizeof(int);
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -85,7 +85,7 @@ int main(int argc, char *argv[]) {
             pthread_mutex_lock(&mutex);
             value = my_stack_pop(stack);
             pthread_mutex_unlock(&mutex);
-            value++;
+            *value = *value+1;
             pthread_mutex_lock(&mutex);
             my_stack_push(stack, value);
             pthread_mutex_unlock(&mutex);
