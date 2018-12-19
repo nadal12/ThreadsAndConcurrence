@@ -1,3 +1,13 @@
+/*
+Aventura 3
+Asignatura: Sistemas Operativos.
+Grupo: Los tres mosqueteros.
+Participantes: 
+                + Eugenio Doñaque
+                + Nadal Llabrés
+                + Alvaro Pons
+*/
+
 #include <pthread.h>   /* Funcionalidades de threads*/
 #include "my_lib.h"
 
@@ -5,7 +15,9 @@
 #define NUM_HILOS 10
 #define NUMERO_DE_NODOS 10
 #define SIZE_DE_LA_PILA sizeof(int)
-#define N 1500000
+#define N 1000000
+
+int thread_counter = 1;
 
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -60,7 +72,7 @@ int main(int argc, char *argv[]) {
     //Stack lista para ser utilizada. Creación de hilos:
     printf("Número de hilos: %d\nNúmero de iteraciones: %d\n", NUM_HILOS, N);
 
-    //Creación de los 10 hilos que se ejecutaran concurrentemente
+    //Creación de los 10 hilos que se ejecutaran concurrentemente.
     for (int i = 0; i < NUM_HILOS; i++) {
         pthread_create(&threads[i], NULL, popAddPush, stack);
     }
@@ -89,11 +101,11 @@ int main(int argc, char *argv[]) {
 void *popAddPush(void *parametro) {
 
     struct my_stack *stack = (struct my_stack*)parametro;
-    // int value = 0, *pvalue = &value;
 
-    pthread_t tid = pthread_self();
-
-    printf("Comenzando hilo %ld\n", tid);
+        pthread_mutex_lock(&mutex);
+        printf("Comenzando hilo %d\n", thread_counter);
+        thread_counter++;
+        pthread_mutex_unlock(&mutex);
 
     for (int i = 0; i < N; i++) {
         /*Sección crítica para el pop*/

@@ -1,3 +1,12 @@
+/*
+Aventura 3
+Asignatura: Sistemas Operativos.
+Grupo: Los tres mosqueteros.
+Participantes: 
+                + Eugenio Doñaque
+                + Nadal Llabrés
+                + Alvaro Pons
+*/
 #include "my_lib.h"
 
 /*******************************************************************************
