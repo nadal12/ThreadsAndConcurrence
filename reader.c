@@ -1,5 +1,4 @@
 #include "aventura3.h"
-#include <stdio.h>
 
 int main(int argc, char *argv[]) {
 
@@ -9,16 +8,15 @@ int main(int argc, char *argv[]) {
     int min = 99999999;
     int *value;
     int media; 
+
     struct my_stack *stack;
     stack = my_stack_read(argv[1]);
 
     for (int i=0;i<10;i++) {
-    
-        if (my_stack_len(stack)>0) {
 
          value = my_stack_pop(stack);
 
-        if (i=0) {
+        if (i==0) {
             min = *value;
             max = *value;
         }
@@ -31,8 +29,6 @@ int main(int argc, char *argv[]) {
             min = *value;
         }
         
-        }
-
        total = total + *value;
        
     }
